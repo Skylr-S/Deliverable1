@@ -5,6 +5,8 @@
  */
 package ca.sheridancollege.project;
 
+import java.util.ArrayList;
+
 /**
  * A class that models each Player in the game. Players have an identifier, which should be unique.
  *
@@ -13,37 +15,50 @@ package ca.sheridancollege.project;
  */
 public abstract class Player {
 
-    private String name; //the unique name for this player
+    private String name;
+    private ArrayList<BlackjackCard> hand;
 
-    /**
-     * A constructor that allows you to set the player's unique ID
-     *
-     * @param name the unique ID to assign to this player.
-     */
     public Player(String name) {
         this.name = name;
+        this.hand = new ArrayList<>();
     }
 
-    /**
-     * @return the player name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Ensure that the playerID is unique
-     *
-     * @param name the player name to set
-     */
-    public void setName(String name) {
-        this.name = name;
+    public void addCard(BlackjackCard card) {
+        hand.add(card);
     }
 
-    /**
-     * The method to be overridden when you subclass the Player class with your specific type of Player and filled in
-     * with logic to play your game.
-     */
+    public void clearHand() {
+        hand.clear();
+    }
+
+    public int getScore() {
+        int score = 0;
+        int numAces = 0;
+        for (BlackjackCard card : hand) {
+            if (card.getRank().equals("Ace")) {
+                numAces++;
+            }
+            score += card.getValue();
+        }
+        while (score > 21 && numAces > 0) {
+            score -= 10;
+            numAces--;
+        }
+        return score;
+    }
+
+    public ArrayList<BlackjackCard> getHand() {
+        return hand;
+    }
+
+    public void hit(GroupOfCards deck) {
+        addCard(deck.draw());
+    }
+
     public abstract void play();
 
 }

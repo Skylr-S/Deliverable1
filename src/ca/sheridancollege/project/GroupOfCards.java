@@ -17,39 +17,58 @@ import java.util.Collections;
  */
 public class GroupOfCards {
 
-    //The group of cards, stored in an ArrayList
-    private ArrayList<Card> cards;
-    private int size;//the size of the grouping
+    private ArrayList<BlackjackCard> cards;
+    private int size;
 
     public GroupOfCards(int size) {
         this.size = size;
+        this.cards = new ArrayList<>();
+        initializeCards();
     }
 
-    /**
-     * A method that will get the group of cards as an ArrayList
-     *
-     * @return the group of cards.
-     */
-    public ArrayList<Card> getCards() {
-        return cards;
+    public void addCard(BlackjackCard card) {
+        cards.add(card);
+    }
+
+    public void clear() {
+        cards.clear();
+    }
+
+    public int getTotalValue() {
+        int totalValue = 0;
+        int numAces = 0;
+        for (BlackjackCard card : cards) {
+            if (card.getRank().equals("Ace")) {
+                numAces++;
+            }
+            totalValue += card.getValue();
+        }
+        while (totalValue > 21 && numAces > 0) {
+            totalValue -= 10;
+            numAces--;
+        }
+        return totalValue;
     }
 
     public void shuffle() {
         Collections.shuffle(cards);
     }
 
-    /**
-     * @return the size of the group of cards
-     */
-    public int getSize() {
-        return size;
+    public BlackjackCard draw() {
+        return cards.remove(0);
     }
 
-    /**
-     * @param size the max size for the group of cards
-     */
-    public void setSize(int size) {
-        this.size = size;
+    public void hit(GroupOfCards deck) {
+        addCard(deck.draw());
     }
 
-}//end class
+    private void initializeCards() {
+        String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        String[] ranks = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+        for (String suit : suits) {
+            for (String rank : ranks) {
+                cards.add(new BlackjackCard(rank, suit));
+            }
+        }
+    }
+}
