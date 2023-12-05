@@ -7,9 +7,6 @@ package ca.sheridancollege.project;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-/**
- * A class that models a Blackjack game.
- */
 public class Blackjack extends Game {
 
     private final int MAX_PLAYERS = 7;
@@ -35,31 +32,22 @@ public class Blackjack extends Game {
         gameStarted = false;
     }
 
-    // Getter for players
     public ArrayList<Player> getPlayers() {
         return players;
     }
 
-    // Getter for MAX_PLAYERS
     public int getMaxPlayers() {
         return MAX_PLAYERS;
     }
 
-    // Method to start the game
     public void start() {
         gameStarted = true;
     }
 
-    // Method to check if the game has started
     public boolean isGameStarted() {
         return gameStarted;
     }
 
-    /**
-     * Adds a player to the game.
-     *
-     * @param name the name of the player to add.
-     */
     public void addPlayer(String name, GroupOfCards deck) {
         if (players.size() < MAX_PLAYERS) {
             players.add(new Player(name) {
@@ -68,10 +56,12 @@ public class Blackjack extends Game {
                     Scanner input = new Scanner(System.in);
                     String choice;
                     do {
+                        System.out.println(getName() + "'s hand: " + getHand());
                         System.out.println("Do you want to hit or stand? (h/s)");
                         choice = input.nextLine().toLowerCase();
                         if (choice.equals("h")) {
                             hit(deck);
+                            System.out.println(getName() + " draws a card.");
                         }
                     } while (!choice.equals("s") && getScore() < MAX_SCORE);
                 }
@@ -81,9 +71,6 @@ public class Blackjack extends Game {
         }
     }
 
-    /**
-     * Deals two cards to each player and the dealer.
-     */
     public void deal() {
         deck.shuffle();
         for (Player player : players) {
@@ -96,12 +83,6 @@ public class Blackjack extends Game {
         dealer.addCard(deck.draw());
     }
 
-    /**
-     * Calculates the score of a player's hand.
-     *
-     * @param player the player whose score to calculate.
-     * @return the score of the player's hand.
-     */
     public int calculateScore(Player player) {
         int score = 0;
         boolean hasAce = false;
@@ -118,9 +99,6 @@ public class Blackjack extends Game {
         return score;
     }
 
-    /**
-     * Allows each player to take their turn and then the dealer takes their turn.
-     */
     public void play() {
         Scanner input = new Scanner(System.in);
         System.out.println("Welcome to Blackjack!");
@@ -135,18 +113,18 @@ public class Blackjack extends Game {
         for (Player player : players) {
             System.out.println(player.getName() + "'s turn:");
             player.play();
-            System.out.println(player.getName() + " has " + calculateScore(player));
+            System.out.println(player.getName() + "'s final hand: " + player.getHand());
+            System.out.println(player.getName() + "'s score: " + calculateScore(player));
             System.out.println();
         }
         System.out.println("Dealer's turn:");
         dealer.play();
-        System.out.println(dealer.getName() + " has " + calculateScore(dealer));
+        System.out.println(dealer.getName() + "'s final hand: " + dealer.getHand());
+        System.out.println(dealer.getName() + "'s score: " + calculateScore(dealer));
         System.out.println();
     }
+    
 
-    /**
-     * Determines and displays the winner(s) of the game.
-     */
     public void declareWinner() {
         int dealerScore = calculateScore(dealer);
         for (Player player : players) {
@@ -162,19 +140,18 @@ public class Blackjack extends Game {
     }
 
     public static void main(String[] args) {
-        Blackjack blackJack = new Blackjack(); // Remove the name parameter
+        Blackjack blackjack = new Blackjack();
         Scanner scanner = new Scanner(System.in);
         boolean playAgain = true;
 
         while (playAgain) {
-            blackJack.play();
-            blackJack.declareWinner();
+            blackjack.play();
+            blackjack.declareWinner();
             System.out.print("Play again? (y/n): ");
             String input = scanner.nextLine().toLowerCase();
             playAgain = input.equals("y") || input.equals("yes");
         }
 
-        scanner.close(); // Close the scanner to avoid resource leak
+        scanner.close();
     }
-
 }
